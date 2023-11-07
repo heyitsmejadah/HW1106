@@ -1,31 +1,49 @@
-var generateBtn = document.querySelector("#generate");
+// Variables for character types
+var lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+var uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var numericChars = "0123456789";
+var specialChars = "!@#$%^&*()_+-=[]{}|;:'<>,.?/";
 
-// Write password to the #password input
-function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-
-  passwordText.value = password;
-
+// Function to generate a random character from character set
+function getRandomChar(characterSet) {
+  var randomIndex = Math.floor(Math.random() * characterSet.length);
+  return characterSet[randomIndex];
 }
 
-// // Add event listener to generate button
-generateBtn.addEventListener("click", writePassword);
-var generateBtn = document.querySelector("#generate");
-
-// Function to generate a secure password based on user prompts
+// Function to generate the password based on user criteria
 function generatePassword() {
-  // Prompt for password length
-  var passwordLength = parseInt(prompt("Enter the password length (between 8 and 128 characters):"));
+  var passwordLength = parseInt(
+    prompt("Enter the password length (between 8 and 128 characters):")
+  );
 
+  if (isNaN(passwordLength) || passwordLength < 8 || passwordLength > 128) {
+    alert("Please enter a valid password length between 8 and 128 characters.");
+    return;
+  }
 
+  var includeLowercase = confirm("Include lowercase letters?");
+  var includeUppercase = confirm("Include uppercase letters?");
+  var includeNumeric = confirm("Include numbers?");
+  var includeSpecial = confirm("Include special characters?");
+
+  if (!includeLowercase && !includeUppercase && !includeNumeric && !includeSpecial) {
+    alert("You must select at least one character type.");
+    return;
+  }
+
+  var characterSet = "";
+  if (includeLowercase) characterSet += lowercaseChars;
+  if (includeUppercase) characterSet += uppercaseChars;
+  if (includeNumeric) characterSet += numericChars;
+  if (includeSpecial) characterSet += specialChars;
+
+  var password = "";
+  for (var i = 0; i < passwordLength; i++) {
+    password += getRandomChar(characterSet);
+  }
+
+  document.getElementById("password").value = password;
 }
 
-// Function to display the generated password
-function writePassword() {
-  var password = generatePassword();
-  var passwordText = document.querySelector("#password");
-}
-
-// Add event listener to the generate button
-generateBtn.addEventListener("click", writePassword);
+// Event for the "Generate Password" button
+document.getElementById("generate").addEventListener("click", generatePassword);
